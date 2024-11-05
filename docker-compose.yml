@@ -11,7 +11,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   backend:
-    build: ./backend
+    image: $BACKEND_IMAGE:${TAG}   
     container_name: backend
     restart: always
     env_file:
@@ -22,7 +22,7 @@ services:
       - postgres
 
   frontend:
-    build: ./frontend
+    image: $FRONTEND_IMAGE:${TAG}  
     container_name: frontend
     restart: always
     env_file:
