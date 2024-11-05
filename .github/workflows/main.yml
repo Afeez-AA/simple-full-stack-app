@@ -110,16 +110,16 @@ jobs:
           echo "New version tag is $new_tag"
           echo "tag=$new_tag" >> $GITHUB_ENV
 
-      - name: Build and Push Backend Image
-        uses: mr-smithers-excellent/docker-build-push@v4
-        with:
-          image: ${{ env.BACKEND_IMAGE }}
-          registry: docker.io
-          tags: ${{ env.tag }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          dockerfile: ./backend/Dockerfile
-          context: ./backend
+      # - name: Build and Push Backend Image
+      #   uses: mr-smithers-excellent/docker-build-push@v4
+      #   with:
+      #     image: ${{ env.BACKEND_IMAGE }}
+      #     registry: docker.io
+      #     tags: ${{ env.tag }}
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
+      #     dockerfile: ./backend/Dockerfile
+      #     context: ./backend
 
       - name: Build and Push Frontend Image
         uses: mr-smithers-excellent/docker-build-push@v4
