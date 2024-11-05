@@ -132,6 +132,6 @@ jobs:
           dockerfile: ./frontend/Dockerfile
           context: ./frontend
 
-      - name: Deploy application with Docker Compose
-        run: |
-          docker-compose -f docker-compose.yml up -d
+      # - name: Deploy application with Docker Compose
+      #   run: |
+      #     docker-compose -f docker-compose.yml up -d
