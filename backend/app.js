@@ -8,7 +8,7 @@ const app = express();
 
 // Use CORS to allow the frontend to connect
 app.use(cors({
-  origin: process.env.FRONTEND_URL // Replace with your frontend URL
+  origin: process.env.FRONTEND_URL 
 }));
 
 // Serve static files (frontend HTML) from the 'public' directory
