@@ -92,3 +92,10 @@ You can also run the application using Docker. Make sure you have Docker and Doc
 ## Notes
 - Remember to replace the placeholders in the `.env` files with your actual values.
 - Ensure PostgreSQL is running with necessary credentials locally if you are deploying without Docker.
+
+
+
+
+
+simple-full-stack-app-backend    latest      eef302ada6fa   4 hours ago    139MB
+simple-full-stack-app-frontend
