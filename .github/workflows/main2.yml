@@ -5,14 +5,14 @@ on:
     branches:
       - ci-cd
     paths:
-      - .github/workflows/main.yml
+      - .github/workflows/main2.yml
 
 env: 
   DB_NAME: myappdb
-  
+
 jobs:
   build:
-    # environment: testing
+
     runs-on: ubuntu-latest
     env:
       DB_HOST: postgres
