@@ -1,0 +1,49 @@
+name: Deploy Project 02
+on: 
+  push:
+    branches:
+      - ci-cd
+env: 
+  DB_NAME: myappdb
+jobs:
+  build and start:
+    # environment: testing
+    runs-on: ubuntu-latest
+    env:
+      DB_HOST: postgres
+      DB_USER: myappuser
+      DB_PASSWORD: password123
+      DB_PORT: 5432 
+      FRONTEND_URL: http://localhost:3000
+      REACT_APP_BACKEND_URL: http://localhost:3001
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: npm-deps-${{ hashFiles('**/package-lock.json') }}
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+          npm start 
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm ci
+      - name: Build and start backend
+        run: |
+          cd backend
+          npm start     
+      - name: Output information
+        run: | 
+          BACKEND_STATUS=$(curl -I http://localhost:3001)
+          FRONTEND_STATUS=$(curl -I http://localhost:3000)
+          echo "BACKEND_STATUS: $BACKEND_STATUS"
+          echo "FRONTEND_STATUS: $FRONTEND_STATUS"
