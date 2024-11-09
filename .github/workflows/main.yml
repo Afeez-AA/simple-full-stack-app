@@ -3,8 +3,9 @@ name: Deploy project
 on:
   push:
     branches:
-      - ci-cd 
-
+      - ci-cd
+    paths:
+      - .github/workflows/main.yml
 jobs:
         
   deploy:
