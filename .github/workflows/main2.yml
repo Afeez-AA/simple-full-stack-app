@@ -1,10 +1,15 @@
-name: Deploy Project
+name: Deploy Project 02
+
 on: 
   push:
     branches:
       - ci-cd
+    paths:
+      - .github/workflows/main.yml
+
 env: 
   DB_NAME: myappdb
+  
 jobs:
   build:
     # environment: testing
@@ -19,28 +24,42 @@ jobs:
     steps:
       - name: Get Code
         uses: actions/checkout@v3
+
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
           path: ~/.npm
           key: npm-deps-${{ hashFiles('**/package-lock.json') }}
+
       - name: Install frontend dependencies
         run: |
           cd frontend
           npm ci
+
       - name: Build frontend
         run: |
           cd frontend
           npm run build
-          npm start 
+
+      - name: Serve frontend
+        run: |
+          cd frontend
+          npx serve -s build -l 3000 &
+
       - name: Install backend dependencies
         run: |
           cd backend
           npm ci
+
       - name: Build and start backend
         run: |
           cd backend
-          npm start     
+
+      - name: Start backend
+        run: |
+          cd backend
+          npm start &  
+
       - name: Output information
         run: | 
           BACKEND_STATUS=$(curl -I http://localhost:3001)
