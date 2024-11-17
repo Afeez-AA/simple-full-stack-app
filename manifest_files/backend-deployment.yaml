@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: afeez511/simple-full-stack-app-backend:v4
+        image: __DOCKER_USERNAME__/__BACKEND_IMAGE__:__IMAGE_TAG__
         ports:
         - containerPort: 3001
         env:
