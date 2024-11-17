@@ -52,17 +52,17 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE }}:${{ env.IMAGE_TAG }}
   
-  # deploy:
-  #   needs: build-push-docker
-  #   runs-on: self-hosted
+  deploy:
+    needs: build-push-docker
+    runs-on: self-hosted
 
-  #   steps:
-  #     - name: Get code
-  #     - uses: actions/checkout@v3
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
 
-  #     - name: deploy
-  #     - working_directory: manifest_files
-  #     - run: kubectl apply -f . 
+      - name: deploy
+        working_directory: manifest_files
+        run: kubectl apply -f . 
 
       
 
