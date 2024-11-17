@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: afeez511/simple-full-stack-app-frontend:v5
+        image: ${REGISTRY}/${DOCKER_USERNAME}/${FRONTEND_IMAGE}:${IMAGE_TAG}
         ports:
         - containerPort: 80
 
