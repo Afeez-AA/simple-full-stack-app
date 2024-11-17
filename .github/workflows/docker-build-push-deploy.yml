@@ -4,7 +4,7 @@ on:
   push:
     branches: ci-cd 
     paths:
-      - .github/workflows/docker-build-push-deploy.yml
+      - .github/workflows/docker-build-push-deploy-workflow.yml
 
   pull_request:
     branches: none # [ main ]
@@ -14,6 +14,7 @@ on:
 
 env:
   REGISTRY: docker.io
+  DOCKER_USERNAME: afeez511
   FRONTEND_IMAGE: frontend-simple-app
   BACKEND_IMAGE: backend-simple-app
   IMAGE_TAG: 1.0.${{ github.run_number }}
@@ -51,17 +52,17 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE }}:${{ env.IMAGE_TAG }}
   
-  deploy:
-    runs-on: self-hosted
-    needs: build-push-docker
+  # deploy:
+  #   needs: build-push-docker
+  #   runs-on: self-hosted
 
-    steps:
-      - name: Get code
-      - uses: actions/checkout@v3
+  #   steps:
+  #     - name: Get code
+  #     - uses: actions/checkout@v3
 
-      - name: deploy
-        working-directory: manifest_files
-        run: kubectl apply -f . 
+  #     - name: deploy
+  #     - working_directory: manifest_files
+  #     - run: kubectl apply -f . 
 
       
 
