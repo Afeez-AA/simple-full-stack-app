@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: deploy
-        working_directory: manifest_files
+        working-directory: manifest_files
         run: kubectl apply -f . 
 
       
