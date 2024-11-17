@@ -1,6 +1,15 @@
 name: fullstack-docker-workflow
 
 on:
+  push:
+    branches: ci-cd 
+    paths:
+      - .github/workflows/docker-build-push-workflow.yml
+
+  pull_request:
+    branches: none # [ main ]
+      
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 env:
