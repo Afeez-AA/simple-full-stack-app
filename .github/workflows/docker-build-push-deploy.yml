@@ -4,7 +4,7 @@ on:
   push:
     branches: ci-cd 
     paths:
-      - .github/workflows/docker-build-push-deploy-workflow.yml
+      - .github/workflows/docker-build-push-deploy.yml
 
   pull_request:
     branches: none # [ main ]
@@ -52,8 +52,8 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE }}:${{ env.IMAGE_TAG }}
   
   deploy:
-    needs: build-push-docker
     runs-on: self-hosted
+    needs: build-push-docker
 
     steps:
       - name: Get code
