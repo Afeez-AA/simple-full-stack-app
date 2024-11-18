@@ -39,7 +39,6 @@ jobs:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
     with:
-    with:
       registry: docker.io
       frontend_image: frontend-simple-app
       backend_image: backend-simple-app
