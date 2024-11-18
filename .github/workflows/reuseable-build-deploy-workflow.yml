@@ -30,11 +30,11 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
     env:
-      REGISTRY: ${{ inputs.registry }}
-      DOCKER_USERNAME: ${{ inputs.docker_username }}
-      FRONTEND_IMAGE: ${{ inputs.frontend_image }}
-      BACKEND_IMAGE: ${{ inputs.backend_image }}
-      IMAGE_TAG: ${{ inputs.image_tag }}
+      registry: ${{ inputs.registry }}
+      docker_username: ${{ inputs.docker_username }}
+      frontend_image: ${{ inputs.frontend_image }}
+      backend_image: ${{ inputs.backend_image }}
+      image_tag: ${{ inputs.image_tag }}
 
     steps:
       - uses: actions/checkout@v3
@@ -45,8 +45,8 @@ jobs:
       - name: Log into Docker Hub
         uses: docker/login-action@v1
         with:
-          REGISTRY: docker.io
-          username: ${{ inputs.secrets.DOCKER_USERNAME }}
+          registry: docker.io
+          username: ${{ inputs.secrets.docker_username }}
           password: ${{ inputs.secrets.DOCKER_PASSWORD }}
 
       # Frontend Build & Push
@@ -55,7 +55,7 @@ jobs:
         with:
           context: ./frontend
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE }}:${{ env.IMAGE_TAG }}
+          tags: ${{ env.registry }}/${{ env.docker_username }}/${{ env.frontend_image }}:${{ env.image_tag }}
 
       # Backend Build & Push
       - name: Build and push Backend image
@@ -63,7 +63,7 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE }}:${{ env.IMAGE_TAG }}
+          tags: ${{ env.registry }}/${{ env.docker_username }}/${{ env.backend_image }}:${{ env.image_tag }}
 
   deploy:
     needs: build-push-docker
@@ -77,11 +77,11 @@ jobs:
         run: |
           cd manifest_files
           # Replace placeholders with actual values
-          sed -i "s|__REGISTRY__|$REGISTRY|g" *.yaml
-          sed -i "s|__DOCKER_USERNAME__|$DOCKER_USERNAME|g" *.yaml
-          sed -i "s|__FRONTEND_IMAGE__|$FRONTEND_IMAGE|g" *.yaml
-          sed -i "s|__BACKEND_IMAGE__|$BACKEND_IMAGE|g" *.yaml
-          sed -i "s|__IMAGE_TAG__|$IMAGE_TAG|g" *.yaml
+          sed -i "s|__registry__|$registry|g" *.yaml
+          sed -i "s|__docker_username__|$docker_username|g" *.yaml
+          sed -i "s|__frontend_image__|$frontend_image|g" *.yaml
+          sed -i "s|__backend_image__|$backend_image|g" *.yaml
+          sed -i "s|__image_tag__|$image_tag|g" *.yaml
 
       - name: Deploy to Kubernetes
         working-directory: manifest_files
