@@ -55,7 +55,7 @@ jobs:
         with:
           context: ./frontend
           push: true
-          tags: ${{ env.registry }}/${{ env.docker_username }}/${{ env.frontend_image }}:${{ env.image_tag }}
+          tags: ${{ env.registry }}/${{ secret.docker_username }}/${{ env.frontend_image }}:${{ env.image_tag }}
 
       # Backend Build & Push
       - name: Build and push Backend image
