@@ -60,10 +60,26 @@ jobs:
       - name: Get code
         uses: actions/checkout@v3
 
-      - name: deploy
+      - name: Update Kubernetes manifests
+        run: |
+          cd manifest_files
+          # Replace placeholders with actual values
+          sed -i "s|__REGISTRY__|$REGISTRY|g" *.yaml
+          sed -i "s|__DOCKER_USERNAME__|$DOCKER_USERNAME|g" *.yaml
+          sed -i "s|__FRONTEND_IMAGE__|$FRONTEND_IMAGE|g" *.yaml
+          sed -i "s|__BACKEND_IMAGE__|$BACKEND_IMAGE|g" *.yaml
+          sed -i "s|__IMAGE_TAG__|$IMAGE_TAG|g" *.yaml
+
+      - name: Deploy to Kubernetes
         working-directory: manifest_files
-        run: kubectl apply -f . 
-
-      
-
+        run: |
+          kubectl apply -f .
+          
+      - name: Verify deployments
+        run: |
+          kubectl get deployments -o wide
+          echo "Frontend image used:" 
+          kubectl get deployment frontend-deployment -o jsonpath='{.spec.template.spec.containers[0].image}'
+          echo "Backend image used:"
+          kubectl get deployment backend-deployment -o jsonpath='{.spec.template.spec.containers[0].image}'
   
