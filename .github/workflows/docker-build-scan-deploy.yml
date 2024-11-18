@@ -63,13 +63,6 @@ jobs:
           exit-code: '1'
           continue-on-error: false  # Will fail workflow if critical vulnerabilities found
 
-      # Generate SARIF output for Frontend
-      - name: Run Trivy for GitHub Security Tab (Frontend)
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE }}:${{ env.IMAGE_TAG }}'
-          format: 'sarif'
-          output: 'frontend-trivy-results.sarif'
 
       # Backend Build & Push
       - name: Build and push Backend image
@@ -103,14 +96,6 @@ jobs:
           exit-code: '1'
           continue-on-error: false  # Will fail workflow if critical vulnerabilities found
 
-      # Generate SARIF output for Backend
-      - name: Run Trivy for GitHub Security Tab (Backend)
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE }}:${{ env.IMAGE_TAG }}'
-          format: 'sarif'
-          output: 'backend-trivy-results.sarif'
-
       # Save scan history
       - name: Save Trivy scan results
         if: always()
@@ -129,73 +114,3 @@ jobs:
         with:
           name: trivy-scan-results
           path: trivy-results/
-
-      # Upload SARIF files
-      - name: Upload SARIF files
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: frontend-trivy-results.sarif
-          
-      - name: Upload Backend SARIF files
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: backend-trivy-results.sarif
-
-      # Create GitHub Issue for vulnerabilities
-      - name: Create Issue for Vulnerabilities
-        if: failure()
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const frontendResults = fs.readFileSync('frontend-trivy-results.txt', 'utf8');
-            const backendResults = fs.readFileSync('backend-trivy-results.txt', 'utf8');
-            
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '🚨 Security vulnerabilities found in Docker images',
-              body: `Security scan completed with findings:
-              
-              ## Frontend Image
-              \`\`\`
-              ${frontendResults}
-              \`\`\`
-              
-              ## Backend Image
-              \`\`\`
-              ${backendResults}
-              \`\`\`
-              
-              Please review these vulnerabilities and take necessary action.
-              
-              - Build: ${context.sha}
-              - Workflow: ${context.workflow}
-              - Run: ${context.runId}`
-            });
-
-  #  deploy:
-  #   needs: build-push-docker
-  #   runs-on: self-hosted
-
-  #   steps:
-  #     - name: Get code
-  #       uses: actions/checkout@v3
-
-  #     - name: Update Kubernetes manifests
-  #       run: |
-  #         cd manifest_files
-  #         # Replace placeholders with actual values
-  #         sed -i "s|__REGISTRY__|$REGISTRY|g" *.yaml
-  #         sed -i "s|__DOCKER_USERNAME__|$DOCKER_USERNAME|g" *.yaml
-  #         sed -i "s|__FRONTEND_IMAGE__|$FRONTEND_IMAGE|g" *.yaml
-  #         sed -i "s|__BACKEND_IMAGE__|$BACKEND_IMAGE|g" *.yaml
-  #         sed -i "s|__IMAGE_TAG__|$IMAGE_TAG|g" *.yaml
-
-  #     - name: Deploy to Kubernetes
-  #       working-directory: manifest_files
-  #       run: |
-  #         kubectl apply -f .
-          
