@@ -1,0 +1,84 @@
+# .github/workflows/trivy-workflow.yml
+name: Trivy Security Scan
+
+on:
+  workflow_call:
+    inputs:
+      registry:
+        required: true
+        type: string
+      docker_username:
+        required: true
+        type: string
+      frontend_image:
+        required: true
+        type: string
+      backend_image:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY: ${{ inputs.registry }}
+      DOCKER_USERNAME: ${{ inputs.docker_username }}
+      FRONTEND_IMAGE: ${{ inputs.frontend_image }}
+      BACKEND_IMAGE: ${{ inputs.backend_image }}
+      IMAGE_TAG: ${{ inputs.image_tag }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log into Docker Hub
+        uses: docker/login-action@v1
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Frontend Build & Scan
+      - name: Build Frontend Image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./frontend
+          push: false  # Build but don't push for scanning
+          load: true
+          tags: frontend:${{ github.sha }}
+
+      - name: Scan Frontend Image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'frontend:${{ github.sha }}'
+          format: 'sarif'
+          output: 'frontend-trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      # Backend Build & Scan
+      - name: Build Backend Image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./backend
+          push: false
+          load: true
+          tags: backend:${{ github.sha }}
+
+      - name: Scan Backend Image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'backend:${{ github.sha }}'
+          format: 'sarif'
+          output: 'backend-trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload SARIF files
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: trivy-results.sarif

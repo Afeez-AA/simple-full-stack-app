@@ -1,0 +1,35 @@
+
+# .github/workflows/main-workflow.yml
+name: Main CI/CD Pipeline
+
+on:
+  push:
+    branches: [ci-cd]
+  workflow_dispatch:
+
+jobs:
+  security-scan:
+    uses: ./.github/workflows/codeql-workflow.yml
+    secrets: inherit
+
+  container-scan:
+    uses: ./.github/workflows/trivy-workflow.yml
+    secrets: inherit
+    with:
+      registry: docker.io
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      frontend_image: frontend-simple-app
+      backend_image: backend-simple-app
+      image_tag: 1.0.${{ github.run_number }}
+    needs: security-scan
+
+  build-deploy:
+    uses: ./.github/workflows/build-deploy-workflow.yml
+    secrets: inherit
+    with:
+      registry: docker.io
+      docker_username: ${{ secrets.DOCKER_USERNAME }}
+      frontend_image: frontend-simple-app
+      backend_image: backend-simple-app
+      image_tag: 1.0.${{ github.run_number }}
+    needs: container-scan

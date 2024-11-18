@@ -1,0 +1,91 @@
+# .github/workflows/build-deploy-workflow.yml
+name: Build and Deploy
+
+on:
+  workflow_call:
+    inputs:
+      registry:
+        required: true
+        type: string
+      docker_username:
+        required: true
+        type: string
+      frontend_image:
+        required: true
+        type: string
+      backend_image:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY: ${{ inputs.registry }}
+      DOCKER_USERNAME: ${{ inputs.docker_username }}
+      FRONTEND_IMAGE: ${{ inputs.frontend_image }}
+      BACKEND_IMAGE: ${{ inputs.backend_image }}
+      IMAGE_TAG: ${{ inputs.image_tag }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log into Docker Hub
+        uses: docker/login-action@v1
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Frontend Build & Push
+      - name: Build and push Frontend image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE }}:${{ env.IMAGE_TAG }}
+
+      # Backend Build & Push
+      - name: Build and push Backend image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE }}:${{ env.IMAGE_TAG }}
+
+  deploy:
+    needs: build-push-docker
+    runs-on: self-hosted
+
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+
+      - name: Update Kubernetes manifests
+        run: |
+          cd manifest_files
+          # Replace placeholders with actual values
+          sed -i "s|__REGISTRY__|$REGISTRY|g" *.yaml
+          sed -i "s|__DOCKER_USERNAME__|$DOCKER_USERNAME|g" *.yaml
+          sed -i "s|__FRONTEND_IMAGE__|$FRONTEND_IMAGE|g" *.yaml
+          sed -i "s|__BACKEND_IMAGE__|$BACKEND_IMAGE|g" *.yaml
+          sed -i "s|__IMAGE_TAG__|$IMAGE_TAG|g" *.yaml
+
+      - name: Deploy to Kubernetes
+        working-directory: manifest_files
+        run: |
+          kubectl apply -f .
+          
+      - name: Verify deployments
+        run: |
+          kubectl get deployments -o wide
+          echo "Frontend image used:" 
+          kubectl get deployment frontend-deployment -o jsonpath='{.spec.template.spec.containers[0].image}'
+          echo "Backend image used:"
+          kubectl get deployment backend-deployment -o jsonpath='{.spec.template.spec.containers[0].image}'
