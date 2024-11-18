@@ -43,8 +43,9 @@ jobs:
         build-mode: ${{ matrix.build-mode }}
     - if: matrix.build-mode == 'manual'
       shell: bash
+      working-directory: frontend
       run: |
-        echo 'oya write your manual build command here'
+        ./npm run build
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
