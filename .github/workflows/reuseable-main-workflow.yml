@@ -1,12 +1,11 @@
 
-name: Main CI/CD Pipeline
+name: Main CI/CD Pipeline Test
 
 on:
   push:
     branches: [ci-cd]
     paths: .github/workflows/reuseable-main-workflow.yml
   workflow_dispatch:
-
 
 
 jobs:
