@@ -79,8 +79,21 @@ jobs:
           output: 'backend-trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
 
-      - name: Upload SARIF files
-        uses: github/codeql-action/upload-sarif@v2
+      # Save scan history
+      - name: Save Trivy scan results
+        if: always()
+        run: |
+          mkdir -p trivy-results
+          echo "Scan completed on $(date)" >> trivy-results/scan-history.txt
+          echo "Frontend Image: ${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE }}:${{ env.IMAGE_TAG }}" >> trivy-results/scan-history.txt
+          echo "Backend Image: ${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE }}:${{ env.IMAGE_TAG }}" >> trivy-results/scan-history.txt
+          cat frontend-trivy-results.txt >> trivy-results/scan-history.txt
+          cat backend-trivy-results.txt >> trivy-results/scan-history.txt
+
+      # Upload scan results as artifacts
+      - name: Upload Trivy scan results
+        uses: actions/upload-artifact@v3
         if: always()
         with:
-          sarif_file: trivy-results.sarif
+          name: trivy-scan-results
+          path: trivy-results/
