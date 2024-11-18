@@ -10,7 +10,7 @@ on:
 
 jobs:
   security-scan:
-    uses: ./.github/workflows/codeql-workflow.yml
+    uses: ""./.github/workflows/codeql-workflow.yml"
     secrets: inherit
 
   container-scan:
