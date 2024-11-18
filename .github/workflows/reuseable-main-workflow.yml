@@ -9,11 +9,11 @@ on:
 
 jobs:
   security-scan:
-    uses: "./.github/workflows/codeql-workflow.yml"
+    uses: ./.github/workflows/reuseable-codeql-workflow.yml
     secrets: inherit
 
   container-scan:
-    uses: ./.github/workflows/trivy-workflow.yml
+    uses: ./.github/workflows/reuseable-trivy-workflow.yml
     secrets: inherit
     with:
       registry: docker.io
@@ -24,7 +24,7 @@ jobs:
     needs: security-scan
 
   build-deploy:
-    uses: ./.github/workflows/build-deploy-workflow.yml
+    uses: ./.github/workflows/reuseable-build-deploy-workflow.yml
     secrets: inherit
     with:
       registry: docker.io
