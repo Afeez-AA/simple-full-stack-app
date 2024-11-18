@@ -39,7 +39,7 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE }}:${{ env.IMAGE_TAG }}
 
-      # Frontend Comprehensive Scanning
+      # Frontend Comprehensive Scanning ...
       - name: Run Trivy vulnerability scanner (Frontend - All)
         uses: aquasecurity/trivy-action@master
         continue-on-error: true
