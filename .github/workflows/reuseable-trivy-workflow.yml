@@ -26,11 +26,11 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     env:
-      REGISTRY: ${{ inputs.registry }}
+      registry: ${{ inputs.registry }}
       docker_username: ${{ inputs.docker_username }}
-      FRONTEND_IMAGE: ${{ inputs.frontend_image }}
-      BACKEND_IMAGE: ${{ inputs.backend_image }}
-      IMAGE_TAG: ${{ inputs.image_tag }}
+      frontend_image: ${{ inputs.frontend_image }}
+      backend_image: ${{ inputs.backend_image }}
+      image_tag: ${{ inputs.image_tag }}
 
     steps:
       - uses: actions/checkout@v3
