@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       registry: ${{ inputs.registry }}
-      docker_username: ${{ inputs.docker_username }}
+      # docker_username: ${{ inputs.docker_username }}
       frontend_image: ${{ inputs.frontend_image }}
       backend_image: ${{ inputs.backend_image }}
       image_tag: ${{ inputs.image_tag }}
