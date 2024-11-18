@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: __DOCKER_USERNAME__/__FRONTEND_IMAGE__:__IMAGE_TAG__
+        image: ${REGISTRY}/${DOCKER_USERNAME}/${FRONTEND_IMAGE}:${IMAGE_TAG}
         ports:
         - containerPort: 80
 
