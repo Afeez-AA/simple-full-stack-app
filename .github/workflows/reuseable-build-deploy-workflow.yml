@@ -27,7 +27,7 @@ on:
 
 
 jobs:
-  build-deploy:
+  build-push-docker:
     runs-on: ubuntu-latest
     env:
       registry: ${{ inputs.registry }}
