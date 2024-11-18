@@ -1,8 +1,12 @@
+#Use CodeQL: For source code security analysis
+
 name: "CodeQL Advanced"
 
 on:
   push:
     branches: [ "ci-cd" ]
+    paths:
+      - .github/wprkflows/codeql.yml
   pull_request:
     branches: [ "ci-cd" ]
   # schedule:

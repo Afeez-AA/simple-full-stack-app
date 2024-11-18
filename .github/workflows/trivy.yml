@@ -1,10 +1,11 @@
+# Use Trivy: For container image and deployment security
 name: trivity-workflow
 
 on:
   push:
     branches: ci-cd 
     paths:
-      - .github/workflows/docker-build-scan-deploy.yml
+      - .github/workflows/trivy.yml
   workflow_dispatch:
 
 env:
