@@ -7,6 +7,13 @@ on:
     paths: .github/workflows/reuseable-main-workflow.yml
   workflow_dispatch:
 
+env:
+  REGISTRY: docker.io
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  FRONTEND_IMAGE: frontend-simple-app
+  BACKEND_IMAGE: backend-simple-app
+  IMAGE_TAG: 1.0.${{ github.run_number }}
+
 jobs:
   security-scan:
     uses: ./.github/workflows/reuseable-codeql-workflow.yml
@@ -16,20 +23,20 @@ jobs:
     uses: ./.github/workflows/reuseable-trivy-workflow.yml
     secrets: inherit
     with:
-      registry: docker.io
+      registry: ${{ .env.REGISTRY }}
       docker_username: ${{ secrets.DOCKER_USERNAME }}
-      frontend_image: frontend-simple-app
-      backend_image: backend-simple-app
-      image_tag: 1.0.${{ github.run_number }}
+      frontend_image: ${{ FRONTEND_IMAGE }}
+      backend_image: ${{ BACKEND_IMAGE }}
+      image_tag: ${{ IMAGE_TAG}}
     needs: security-scan
 
   build-deploy:
     uses: ./.github/workflows/reuseable-build-deploy-workflow.yml
     secrets: inherit
     with:
-      registry: docker.io
+      registry: ${{ .env.REGISTRY }}
       docker_username: ${{ secrets.DOCKER_USERNAME }}
-      frontend_image: frontend-simple-app
-      backend_image: backend-simple-app
-      image_tag: 1.0.${{ github.run_number }}
+      frontend_image: ${{ FRONTEND_IMAGE }}
+      backend_image: ${{ BACKEND_IMAGE }}
+      image_tag: ${{ IMAGE_TAG}}
     needs: container-scan
