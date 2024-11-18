@@ -2,9 +2,6 @@
 name: CodeQL Analysis
 
 on:
-  push:
-  branches: [ci-cd]
-  paths: .github/workflows/reuseable-main-workflow.yml
   workflow_call:  # Makes the workflow reusable
 
 jobs:

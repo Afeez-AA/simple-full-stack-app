@@ -7,12 +7,6 @@ on:
     paths: .github/workflows/reuseable-main-workflow.yml
   workflow_dispatch:
 
-# env:
-#   REGISTRY: docker.io
-#   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-#   FRONTEND_IMAGE: frontend-simple-app
-#   BACKEND_IMAGE: backend-simple-app
-#   IMAGE_TAG: 1.0.${{ github.run_number }}
 
 jobs:
   security-scan:
