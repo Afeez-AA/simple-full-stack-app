@@ -19,7 +19,7 @@ on:
       image_tag:
         required: true
         type: string
-      secrets:
+    secrets:
       docker_username:
         required: true
       docker_password:
