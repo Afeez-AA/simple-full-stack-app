@@ -23,20 +23,20 @@ jobs:
     uses: ./.github/workflows/reuseable-trivy-workflow.yml
     secrets: inherit
     with:
-      registry: ${{ .env.REGISTRY }}
-      docker_username: ${{ secrets.DOCKER_USERNAME }}
-      frontend_image: ${{ FRONTEND_IMAGE }}
-      backend_image: ${{ BACKEND_IMAGE }}
-      image_tag: ${{ IMAGE_TAG}}
+      registry: ${{ env.REGISTRY }}
+      docker_username: ${{ env.DOCKER_USERNAME }}
+      frontend_image: ${{ env.FRONTEND_IMAGE }}
+      backend_image: ${{ env.BACKEND_IMAGE }}
+      image_tag: ${{ env.IMAGE_TAG}}
     needs: security-scan
 
   build-deploy:
     uses: ./.github/workflows/reuseable-build-deploy-workflow.yml
     secrets: inherit
     with:
-      registry: ${{ .env.REGISTRY }}
+      registry: ${{ env.REGISTRY }}
       docker_username: ${{ secrets.DOCKER_USERNAME }}
-      frontend_image: ${{ FRONTEND_IMAGE }}
-      backend_image: ${{ BACKEND_IMAGE }}
-      image_tag: ${{ IMAGE_TAG}}
+      frontend_image: ${{ env.FRONTEND_IMAGE }}
+      backend_image: ${{ env.BACKEND_IMAGE }}
+      image_tag: ${{ env.IMAGE_TAG}}
     needs: container-scan
