@@ -7,11 +7,8 @@ on:
     paths: .github/workflows/reuseable-main-workflow.yml
   workflow_dispatch:
 
-env:
-  registry: docker.io
-  frontend_image: frontend-simple-app
-  backend_image: backend-simple-app
-  image_tag: '1.0.${{ github.run_number }}'
+# env:
+
 
 
 jobs:
@@ -30,10 +27,10 @@ jobs:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
     with:
-      registry: ${{ env.registry }}
-      frontend_image: ${{ env.frontend_image }}
-      backend_image: ${{ env.backend_image }}
-      image_tag: ${{ env.image_tag }}
+      registry: docker.io
+      frontend_image: frontend-simple-app
+      backend_image: backend-simple-app
+      image_tag: '1.0.${{ github.run_number }}'
     needs: security-scan
 
   build-deploy:
@@ -42,8 +39,9 @@ jobs:
       docker_username: ${{ secrets.DOCKER_USERNAME }}
       docker_password: ${{ secrets.DOCKER_PASSWORD }}
     with:
-      registry: ${{ env.registry }}
-      frontend_image: ${{ env.frontend_image }}
-      backend_image: ${{ env.backend_image }}
-      image_tag: ${{ env.image_tag }}
+    with:
+      registry: docker.io
+      frontend_image: frontend-simple-app
+      backend_image: backend-simple-app
+      image_tag: '1.0.${{ github.run_number }}'
     needs: container-scan
