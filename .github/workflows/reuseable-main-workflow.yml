@@ -1,5 +1,5 @@
 
-name: Main CI/CD Pipeline test 
+name: Main CI/CD Pipeline
 
 on:
   push:
