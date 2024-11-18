@@ -63,7 +63,7 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ${{ env.registry }}/${{ env.docker_username }}/${{ env.backend_image }}:${{ env.image_tag }}
+          tags: ${{ env.registry }}/${{ secret.docker_username }}/${{ env.backend_image }}:${{ env.image_tag }}
 
   deploy:
     needs: build-push-docker
