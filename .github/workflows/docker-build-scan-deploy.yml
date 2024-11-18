@@ -61,7 +61,7 @@ jobs:
           image-ref: '${{ env.REGISTRY }}/${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE }}:${{ env.IMAGE_TAG }}'
           severity: 'CRITICAL'
           exit-code: '1'
-          continue-on-error: false  #Will fail workflow if critical vulnerabilities found
+          continue-on-error: false  # Will fail workflow if critical vulnerabilities found
 
       # Generate SARIF output for Frontend
       - name: Run Trivy for GitHub Security Tab (Frontend)
@@ -124,7 +124,7 @@ jobs:
 
       # Upload scan results as artifacts
       - name: Upload Trivy scan results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: trivy-scan-results
@@ -132,13 +132,13 @@ jobs:
 
       # Upload SARIF files
       - name: Upload SARIF files
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: frontend-trivy-results.sarif
           
       - name: Upload Backend SARIF files
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: backend-trivy-results.sarif
@@ -175,3 +175,27 @@ jobs:
               - Workflow: ${context.workflow}
               - Run: ${context.runId}`
             });
+
+  #  deploy:
+  #   needs: build-push-docker
+  #   runs-on: self-hosted
+
+  #   steps:
+  #     - name: Get code
+  #       uses: actions/checkout@v3
+
+  #     - name: Update Kubernetes manifests
+  #       run: |
+  #         cd manifest_files
+  #         # Replace placeholders with actual values
+  #         sed -i "s|__REGISTRY__|$REGISTRY|g" *.yaml
+  #         sed -i "s|__DOCKER_USERNAME__|$DOCKER_USERNAME|g" *.yaml
+  #         sed -i "s|__FRONTEND_IMAGE__|$FRONTEND_IMAGE|g" *.yaml
+  #         sed -i "s|__BACKEND_IMAGE__|$BACKEND_IMAGE|g" *.yaml
+  #         sed -i "s|__IMAGE_TAG__|$IMAGE_TAG|g" *.yaml
+
+  #     - name: Deploy to Kubernetes
+  #       working-directory: manifest_files
+  #       run: |
+  #         kubectl apply -f .
+          
