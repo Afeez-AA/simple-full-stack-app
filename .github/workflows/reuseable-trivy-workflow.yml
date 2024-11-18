@@ -7,9 +7,6 @@ on:
       registry:
         required: true
         type: string
-      docker_username:
-        required: true
-        type: string
       frontend_image:
         required: true
         type: string
@@ -19,6 +16,11 @@ on:
       image_tag:
         required: true
         type: string
+    secrets:
+      docker_username:
+        required: true
+      docker_password:
+        required: true
 
 jobs:
   scan:
