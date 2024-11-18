@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: __REGISTRY__/__DOCKER_USERNAME__/__FRONTEND_IMAGE__:__IMAGE_TAG__
+        # image: __REGISTRY__/__DOCKER_USERNAME__/__FRONTEND_IMAGE__:__IMAGE_TAG__
+        image: __registry__/__dockerhub_username__/backend_image__:__image_tag
         ports:
         - containerPort: 80
 
